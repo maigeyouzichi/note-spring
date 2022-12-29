@@ -3,14 +3,13 @@ package com.spring.config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 不要忘记@Configuration ，@Bean注解生效的前提是JdbcConfig首先是受Spring容器管理的
  * 也就是说 Spring在扫描的时候，先扫描类，后扫描类中的方法
  * @author lihao
  */
-@Configuration
+//@Configuration
 public class JdbcConfig {
 
     @Bean
