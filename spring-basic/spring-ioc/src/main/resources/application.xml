@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--bean加载第一种方式: 纯xml模式-->
+    <!--<bean id="userService" class="com.spring.service.UserService">
+        <property name="mailService" ref="mailService" />
+    </bean>
+    <bean id="mailService" name="mailService2;mailService3" class="com.spring.service.MailService" />-->
+
+    <!--bean加载第二种方式: xml+注解 -->
+    <context:component-scan base-package="com.spring" />
+
+    <!--bean加载第三种方式: 纯注解方式 见配置类: com.spring.config -->
+
+</beans>
