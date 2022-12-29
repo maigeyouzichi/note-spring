@@ -1,6 +1,6 @@
 package com.spring.config;
 
-import com.spring.entity.User;
+import com.spring.aware.UserRegistrar;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -9,7 +9,10 @@ import org.springframework.context.annotation.Import;
  * @author lihao
  */
 @Configuration
-//@ComponentScan("com.spring")
-@Import(User.class)//User本身没有被任何注解标记,通过@Import注解可以将其加载到ioc容器中
+//@ComponentScan("com.spring") //这种需要被扫描的类被@compent注解修饰
+//@Import(User.class)//User本身没有被任何注解标记,通过@Import注解可以将其加载到ioc容器中
+//@Import(MyImportSelector.class)
+//@Import(MyImportBeanDefinitionRegistrar.class)
+@Import(UserRegistrar.class)
 public class SpringConfig {
 }
