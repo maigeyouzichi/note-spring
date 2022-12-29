@@ -4,12 +4,11 @@ import com.spring.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author lihao
  */
-@Component
+//@Component
 public class UserService {
 
     private List<User> users = new ArrayList<>(List.of(

@@ -1,12 +1,11 @@
 package com.spring.service;
 
 import com.spring.entity.User;
-import org.springframework.stereotype.Service;
 
 /**
  * @author lihao
  */
-@Service
+//@Service
 public class MailService {
 
     public boolean sendRegisterMail(User user) {

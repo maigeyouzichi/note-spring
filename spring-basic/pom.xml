@@ -12,6 +12,7 @@
     <artifactId>spring-basic</artifactId>
     <modules>
         <module>spring-ioc</module>
+        <module>spring-bean-life-cycle</module>
     </modules>
 
     <properties>
