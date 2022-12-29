@@ -1,5 +1,7 @@
 package com.spring;
 
+import com.spring.entity.User;
+import lombok.val;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -21,7 +23,7 @@ public class Main {
         //System.out.println("------------");
         //测试@configuration @bean beanName: 方法名 (数据库需要连接正确)
         //System.out.println(context.getBean("dataSource"));
-        //val user = context.getBean(User.class);
-        //System.out.println("user: "+user);
+        val user = context.getBean(User.class);
+        System.out.println("user: "+user);
     }
 }

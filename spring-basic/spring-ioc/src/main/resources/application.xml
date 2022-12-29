@@ -11,6 +11,8 @@
 
     <!--bean加载第二种方式: xml+注解 -->
     <context:component-scan base-package="com.spring" />
+    <!-- 配置自定义的后置处理器 -->
+    <bean id="postProcessor" class="com.spring.processor.MyBeanPostProcessor" />
 
     <!--bean加载第三种方式: 纯注解方式 见配置类: com.spring.config -->
 
