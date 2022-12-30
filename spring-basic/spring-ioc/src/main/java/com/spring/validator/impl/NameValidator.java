@@ -1,0 +1,16 @@
+package com.spring.validator.impl;
+
+import com.spring.validator.Validator;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author lihao
+ */
+@Component
+public class NameValidator implements Validator {
+    public void validate(String email, String password, String name) {
+        if (name == null || name.isBlank() || name.length() > 20) {
+            throw new IllegalArgumentException("invalid name: " + name);
+        }
+    }
+}
