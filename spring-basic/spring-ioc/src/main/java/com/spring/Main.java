@@ -26,6 +26,7 @@ public class Main {
 //        val user = context.getBean(User.class);
 //        System.out.println("user: "+user);
         val validators = context.getBean(Validators.class);
-        validators.validate("maigeyouzichi@gmail.com", "zhangsan", "zhangsan");
+        //validators.validate("maigeyouzichi@gmail.com", "zhangsan", "zhangsan");
+        validators.showUser();
     }
 }

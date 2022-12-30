@@ -1,8 +1,6 @@
 package com.spring.config;
 
-import com.spring.aware.UserRegistrar;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * 加载bean第三种方式: 纯注解方式
@@ -13,6 +11,6 @@ import org.springframework.context.annotation.Import;
 //@Import(User.class)//User本身没有被任何注解标记,通过@Import注解可以将其加载到ioc容器中
 //@Import(MyImportSelector.class)
 //@Import(MyImportBeanDefinitionRegistrar.class)
-@Import(UserRegistrar.class)
+//@Import(UserRegistrar.class)
 public class SpringConfig {
 }
