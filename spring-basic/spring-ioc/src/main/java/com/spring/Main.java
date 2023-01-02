@@ -1,9 +1,10 @@
 package com.spring;
 
-import com.spring.validator.Validators;
+import com.spring.config.SpringConfig;
+import com.spring.entity.User;
 import lombok.val;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * @author lihao
@@ -11,8 +12,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class Main {
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
-        //ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+        //ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
         //测试bean注入
         //UserService userService = context.getBean("userService", UserService.class);
         //userService.registerUser("ddd@mszlu.com","123456","ddd");
@@ -23,10 +24,10 @@ public class Main {
         //System.out.println("------------");
         //测试@configuration @bean beanName: 方法名 (数据库需要连接正确)
         //System.out.println(context.getBean("dataSource"));
-//        val user = context.getBean(User.class);
-//        System.out.println("user: "+user);
-        val validators = context.getBean(Validators.class);
+        val user = context.getBean(User.class);
+        System.out.println("user: "+user);
+        //val validators = context.getBean(Validators.class);
         //validators.validate("maigeyouzichi@gmail.com", "zhangsan", "zhangsan");
-        validators.showUser();
+        //validators.showUser();
     }
 }
