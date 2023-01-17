@@ -10,9 +10,14 @@ import org.springframework.core.type.AnnotationMetadata;
  */
 public class MyImportSelector implements ImportSelector {
 
+    /**
+     * User.class.getName()可以获得User类的全限定类名:com.spring.entity.User,根据命名可以找到具体的类,实例化并加入到容器
+     * @return String[]类名数组,返回的类名都会实例化并加入到容器中
+     */
     @Override
     public String[] selectImports(AnnotationMetadata annotationMetadata) {
 
         return new String[]{User.class.getName()};
     }
+
 }
