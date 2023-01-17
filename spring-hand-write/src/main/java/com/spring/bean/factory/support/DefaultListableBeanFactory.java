@@ -5,6 +5,9 @@ import com.spring.bean.factory.config.BeanDefinition;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * DefaultListableBeanFactory是源码中比较核心的类
+ */
 @SuppressWarnings("all")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry {
 

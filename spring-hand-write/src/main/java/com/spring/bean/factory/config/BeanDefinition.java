@@ -3,6 +3,9 @@ package com.spring.bean.factory.config;
 @SuppressWarnings("all")
 public class BeanDefinition {
 
+    /**
+     * bean的定义变成Class,这样bean的实例化操作就会放在容器中进行处理了.
+     */
     private Class beanClass;
 
     public BeanDefinition(Class beanClass) {

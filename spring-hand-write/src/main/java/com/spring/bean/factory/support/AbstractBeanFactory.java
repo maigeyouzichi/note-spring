@@ -5,6 +5,7 @@ import com.spring.bean.factory.BeanFactory;
 import com.spring.bean.factory.config.BeanDefinition;
 
 /**
+ * 抽象类定义模板方法
  * 继承自 DefaultSingletonBeanRegistry 拥有了注册和获取单例Bean的能力
  */
 @SuppressWarnings("all")
