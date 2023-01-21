@@ -1,6 +1,7 @@
 package com.spring.bean;
 
 import com.spring.bean.factory.config.BeanDefinition;
+import com.spring.bean.factory.config.BeanReference;
 import com.spring.bean.factory.support.DefaultListableBeanFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,22 +22,23 @@ public class SpringIocTest {
         // 1.初始化 BeanFactory
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
-        // 2.注册 bean
-        BeanDefinition beanDefinition = new BeanDefinition(UserService.class);
-        beanFactory.registerBeanDefinition("userService", beanDefinition);
+        // 2. UserDao 注册
+        beanFactory.registerBeanDefinition("userDao", new BeanDefinition(UserDao.class));
 
-        // 3.第一次获取 bean
-        UserService userService = (UserService) beanFactory.getBean("userService","Jack");
-        userService.queryUserInfo();
-        System.out.println(userService.getClass().getName());
+        // 3. UserService 设置属性[uId、userDao]
+        PropertyValues propertyValues = new PropertyValues();
+        propertyValues.addPropertyValue(new PropertyValue("uId", "10001"));
+        propertyValues.addPropertyValue(new PropertyValue("userDao",new BeanReference("userDao")));
+
+        // 4. UserService 注入bean
+        beanFactory.registerBeanDefinition("userService", new BeanDefinition(UserService.class, propertyValues));
+
+        // 5. UserService 获取bean
+        UserService userService = (UserService) beanFactory.getBean("userService");
+        userService.queryUserInfoByDao();
 
         UserService userService2 = (UserService) beanFactory.getBean("userService");
-        userService2.queryUserInfo();
-        System.out.println(userService.getClass().getName());
-
-        // 4.第二次获取 bean from Singleton
-//        UserService userService_singleton = (UserService) beanFactory.getSingleton("userService");
-//        userService_singleton.queryUserInfo();
+        userService2.queryUserInfoByDao();
     }
 
     /**

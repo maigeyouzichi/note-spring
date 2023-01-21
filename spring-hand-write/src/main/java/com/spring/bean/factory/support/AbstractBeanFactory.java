@@ -24,6 +24,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected <T> T doGetBean(final String name, final Object[] args) {
         Object bean = getSingleton(name);
         if (bean != null) {
+            System.out.println("容器中直接获取bean: "+ bean.getClass().getName());
             return (T) bean;
         }
         BeanDefinition beanDefinition = getBeanDefinition(name);
