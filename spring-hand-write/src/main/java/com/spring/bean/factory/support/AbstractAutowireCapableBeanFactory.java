@@ -5,7 +5,7 @@ import com.spring.bean.factory.config.BeanDefinition;
 import java.lang.reflect.Constructor;
 
 /**
- * 这里体现了类的各司其职,不关心的方法不去实现
+ * 职责: 更细粒度的丰富了getBean方法
  */
 @SuppressWarnings("all")
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {

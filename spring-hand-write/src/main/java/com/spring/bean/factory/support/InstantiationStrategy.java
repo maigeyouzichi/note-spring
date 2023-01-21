@@ -4,6 +4,9 @@ import com.spring.bean.BeansException;
 import com.spring.bean.factory.config.BeanDefinition;
 import java.lang.reflect.Constructor;
 
+/**
+ * 职责: 声明实例化bean策略接口
+ */
 @SuppressWarnings("all")
 public interface InstantiationStrategy {
 

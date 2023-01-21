@@ -5,6 +5,9 @@ import com.spring.bean.factory.config.BeanDefinition;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * 职责: 实现策略
+ */
 @SuppressWarnings("all")
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
 

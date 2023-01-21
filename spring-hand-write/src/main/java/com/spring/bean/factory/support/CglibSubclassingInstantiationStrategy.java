@@ -6,6 +6,9 @@ import java.lang.reflect.Constructor;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 
+/**
+ * 职责: 实现策略
+ */
 @SuppressWarnings("all")
 public class CglibSubclassingInstantiationStrategy implements InstantiationStrategy {
 

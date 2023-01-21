@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * DefaultListableBeanFactory是源码中比较核心的类
+ * 职责: 最终获取了getBean的能力,自身或其父类实现了全部的细节定义
  */
 @SuppressWarnings("all")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry {

@@ -1,5 +1,8 @@
 package com.spring.bean;
 
+/**
+ * 职责: 代表一种异常
+ */
 @SuppressWarnings("all")
 public class BeansException extends RuntimeException {
 

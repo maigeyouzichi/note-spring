@@ -2,12 +2,14 @@ package com.spring.bean.factory;
 
 import com.spring.bean.BeansException;
 
+/**
+ * 职责: 声明获取bean的能力
+ */
 @SuppressWarnings("all")
 public interface BeanFactory {
 
     Object getBean(String name) throws BeansException;
 
     Object getBean(String name, Object... args) throws BeansException;
-
 
 }

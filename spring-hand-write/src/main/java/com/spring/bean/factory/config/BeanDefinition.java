@@ -1,5 +1,8 @@
 package com.spring.bean.factory.config;
 
+/**
+ * 记录类定义信息
+ */
 @SuppressWarnings("all")
 public class BeanDefinition {
 

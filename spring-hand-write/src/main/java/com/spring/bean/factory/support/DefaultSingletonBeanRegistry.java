@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 单例注册类
+ * 职责: 注册单例对象,获取单例对象
+ * 获取单例实例的能力单独解耦出来了
  */
 @SuppressWarnings("all")
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {

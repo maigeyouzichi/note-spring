@@ -2,6 +2,9 @@ package com.spring.bean.factory.support;
 
 import com.spring.bean.factory.config.BeanDefinition;
 
+/**
+ * 职责: 注册bean定义
+ */
 @SuppressWarnings("all")
 public interface BeanDefinitionRegistry {
 
