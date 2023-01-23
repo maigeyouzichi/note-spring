@@ -5,7 +5,12 @@
 
     <bean id="userService" class="com.spring.bean.UserService">
         <property name="uId" value="10001"/>
+        <property name="company" value="腾讯"/>
+        <property name="location" value="深圳"/>
         <property name="userDao" ref="userDao"/>
     </bean>
+
+    <bean class="com.spring.common.MyBeanFactoryPostProcessor"/>
+    <bean class="com.spring.common.MyBeanPostProcessor"/>
 
 </beans>

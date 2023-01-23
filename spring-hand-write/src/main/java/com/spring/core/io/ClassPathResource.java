@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-@SuppressWarnings("all")
 public class ClassPathResource implements Resource {
 
     private final String path;

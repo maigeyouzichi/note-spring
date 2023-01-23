@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-@SuppressWarnings("all")
 public class UrlResource implements Resource {
 
     private final URL url;

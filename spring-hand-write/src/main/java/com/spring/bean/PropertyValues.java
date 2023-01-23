@@ -6,7 +6,6 @@ import java.util.List;
 /**
  * 职责: 用于传递类中属性信息
  */
-@SuppressWarnings("all")
 public class PropertyValues {
 
     private final List<PropertyValue> propertyValueList = new ArrayList<>();

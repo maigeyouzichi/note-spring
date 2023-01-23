@@ -1,15 +1,20 @@
 package com.spring.bean.factory.support;
 
 import com.spring.bean.BeansException;
-import com.spring.bean.factory.BeanFactory;
 import com.spring.bean.factory.config.BeanDefinition;
+import com.spring.bean.factory.config.BeanPostProcessor;
+import com.spring.bean.factory.config.ConfigurableBeanFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 抽象类定义模板方法
  * 职责: 更细粒度的声明了getBean的过程
  */
-@SuppressWarnings("all")
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    /** BeanPostProcessors to apply in createBean */
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -40,4 +45,17 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException;
 
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
+        this.beanPostProcessors.remove(beanPostProcessor);//应该是防止重复加入
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    /**
+     * Return the list of BeanPostProcessors that will get applied
+     * to beans created with this factory.
+     */
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
 }

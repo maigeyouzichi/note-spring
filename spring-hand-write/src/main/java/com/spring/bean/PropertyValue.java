@@ -3,7 +3,6 @@ package com.spring.bean;
 /**
  * 职责: 用于传递类中属性信息
  */
-@SuppressWarnings("all")
 public class PropertyValue {
 
     private final String name;

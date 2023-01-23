@@ -9,7 +9,6 @@ import net.sf.cglib.proxy.NoOp;
 /**
  * 职责: 实现策略
  */
-@SuppressWarnings("all")
 public class CglibSubclassingInstantiationStrategy implements InstantiationStrategy {
 
     @Override
@@ -22,9 +21,7 @@ public class CglibSubclassingInstantiationStrategy implements InstantiationStrat
                 return super.hashCode();
             }
         });
-        if (null == ctor) {
-            return enhancer.create();
-        }
+        if (null == ctor) return enhancer.create();
         return enhancer.create(ctor.getParameterTypes(), args);
     }
 

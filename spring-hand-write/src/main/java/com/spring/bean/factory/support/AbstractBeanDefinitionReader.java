@@ -3,7 +3,6 @@ package com.spring.bean.factory.support;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.ResourceLoader;
 
-@SuppressWarnings("all")
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
 
     private final BeanDefinitionRegistry registry;

@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * 职责: 实现策略
  */
-@SuppressWarnings("all")
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
     @Override

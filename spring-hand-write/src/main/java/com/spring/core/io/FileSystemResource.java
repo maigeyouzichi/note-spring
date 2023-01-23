@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-@SuppressWarnings("all")
 public class FileSystemResource implements Resource {
 
     private final File file;

@@ -10,7 +10,6 @@ import java.util.Map;
  * DefaultListableBeanFactory是源码中比较核心的类
  * 职责: 最终获取了getBean的能力,自身或其父类实现了全部的细节定义
  */
-@SuppressWarnings("all")
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry, ConfigurableListableBeanFactory {
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
@@ -47,6 +46,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
         if (beanDefinition == null) throw new BeansException("No bean named '" + beanName + "' is defined");
         return beanDefinition;
+    }
+
+    @Override
+    public void preInstantiateSingletons() throws BeansException {
+        beanDefinitionMap.keySet().forEach(this::getBean);
     }
 
 }
