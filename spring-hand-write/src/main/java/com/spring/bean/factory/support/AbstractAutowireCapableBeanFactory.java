@@ -92,10 +92,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 执行初始化前置方法 -> 执行初始化方法 -> 执行初始化后置方法
-     * @param beanName
-     * @param bean
-     * @param beanDefinition
-     * @return
      */
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
         // 1. 执行 BeanPostProcessor Before 处理
@@ -111,6 +107,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return wrappedBean;
     }
 
+    /**
+     * 这里暂时是两部分:
+     * 一部分是实现了InitializingBean的重写方法会执行
+     * 一部分是xml中指定了init-method的方法会执行
+     * (销毁逻辑一样)
+     */
     private void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
         // 1. 实现接口 InitializingBean
         if (bean instanceof InitializingBean) {
@@ -124,7 +126,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             if (null == initMethod) {
                 throw new BeansException("Could not find an init method named '" + initMethodName + "' on bean with name '" + beanName + "'");
             }
-            initMethod.invoke(bean);//todo 这里不理解,如果最后重新实例化bean,也没有对这个bean的后续处理
+            initMethod.invoke(bean);
         }
     }
 

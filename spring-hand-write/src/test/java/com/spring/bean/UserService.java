@@ -1,9 +1,12 @@
 package com.spring.bean;
 
+import com.spring.bean.factory.DisposableBean;
+import com.spring.bean.factory.InitializingBean;
+
 /**
  * @author lihao on 2023/1/16
  */
-public class UserService {
+public class UserService implements InitializingBean, DisposableBean {
 
     private String name;
     private String uId;
@@ -69,5 +72,15 @@ public class UserService {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("执行：UserService.destroy");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("执行：UserService.afterPropertiesSet");
     }
 }

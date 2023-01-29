@@ -7,14 +7,20 @@ public class UserDao {
 
     private static final Map<String, String> hashMap = new HashMap<>();
 
-    static {
-        hashMap.put("10001", "张三");
-        hashMap.put("10002", "李四");
-        hashMap.put("10003", "王五");
+    public void initDataMethod(){
+        System.out.println("执行：init-method");
+        hashMap.put("10001", "小傅哥");
+        hashMap.put("10002", "八杯水");
+        hashMap.put("10003", "阿毛");
     }
 
     public String queryUserName(String uId) {
         return hashMap.get(uId);
+    }
+
+    public void destroyDataMethod(){
+        System.out.println("执行：destroy-method");
+        hashMap.clear();
     }
 
 }
