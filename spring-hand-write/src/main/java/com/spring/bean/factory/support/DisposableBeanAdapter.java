@@ -6,6 +6,11 @@ import com.spring.bean.factory.DisposableBean;
 import com.spring.bean.factory.config.BeanDefinition;
 import java.lang.reflect.Method;
 
+/**
+ * 适配器
+ * 无论是对象自身实现了DisposableBean,还是xml中配置了销毁方法,都是通过适配器的方式加入销毁待执行集合.
+ * @author lihao
+ */
 public class DisposableBeanAdapter implements DisposableBean {
 
     private final Object bean;

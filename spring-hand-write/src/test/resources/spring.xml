@@ -8,9 +8,11 @@
         <property name="company" value="腾讯"/>
         <property name="location" value="深圳"/>
         <property name="userDao" ref="userDao"/>
+        <property name="iUserDao" ref="proxyUserDao"/>
     </bean>
 
     <bean class="com.spring.common.MyBeanFactoryPostProcessor"/>
     <bean class="com.spring.common.MyBeanPostProcessor"/>
+    <bean id="proxyUserDao" class="com.spring.bean.ProxyBeanFactory"/>
 
 </beans>

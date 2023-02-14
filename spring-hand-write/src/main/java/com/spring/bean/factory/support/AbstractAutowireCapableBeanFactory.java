@@ -39,13 +39,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
-        // 注册实现了 DisposableBean 接口的 Bean 对象(声明需要丢弃的bean)
+        // 注册实现了 DisposableBean 接口的 Bean 对象以及xml中声明了销毁方法的对象(声明需要丢弃的bean)
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
-        addSingleton(beanName, bean);
+        // 判断 SCOPE_SINGLETON、SCOPE_PROTOTYPE
+        if (beanDefinition.isSingleton()) {
+            addSingleton(beanName, bean);
+        }
         return bean;
     }
 
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        // 非 Singleton 类型的 Bean 不执行销毁方法
+        if (!beanDefinition.isSingleton()) return;
         if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
         }
@@ -126,7 +131,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * 这里暂时是两部分:
      * 一部分是实现了InitializingBean的重写方法会执行
      * 一部分是xml中指定了init-method的方法会执行
-     * (销毁逻辑一样)
+     * (销毁逻辑一样,不同的是initMethod在初始化的时候立即执行,销毁方法是通过适配器模式加入待执行集合中去,虚拟器关闭前执行钩子函数,就会执行到)
      */
     private void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
         // 1. 实现接口 InitializingBean
