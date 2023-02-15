@@ -15,4 +15,8 @@
     <bean class="com.spring.common.MyBeanPostProcessor"/>
     <bean id="proxyUserDao" class="com.spring.bean.ProxyBeanFactory"/>
 
+    <bean class="com.spring.event.ContextRefreshedEventListener"/>
+    <bean class="com.spring.event.CustomEventListener"/>
+    <bean class="com.spring.event.ContextClosedEventListener"/>
+
 </beans>
