@@ -1,10 +1,19 @@
 package com.spring;
 
 import cn.hutool.core.io.IoUtil;
+import com.spring.aop.AdvisedSupport;
+import com.spring.aop.MethodMatcher;
+import com.spring.aop.TargetSource;
+import com.spring.aop.aspectj.AspectJExpressionPointcut;
+import com.spring.aop.framework.Cglib2AopProxy;
+import com.spring.aop.framework.JdkDynamicAopProxy;
+import com.spring.aop.framework.ReflectiveMethodInvocation;
+import com.spring.bean.IUserService;
 import com.spring.bean.PropertyValue;
 import com.spring.bean.PropertyValues;
 import com.spring.bean.UserDao;
 import com.spring.bean.UserService;
+import com.spring.bean.UserServiceInterceptor;
 import com.spring.bean.factory.config.BeanDefinition;
 import com.spring.bean.factory.config.BeanReference;
 import com.spring.bean.factory.support.DefaultListableBeanFactory;
@@ -18,9 +27,13 @@ import com.spring.event.CustomEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.openjdk.jol.info.ClassLayout;
@@ -242,5 +255,76 @@ public class SpringIocTest {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
         applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！"));
         applicationContext.registerShutdownHook();
+    }
+
+    @Test
+    public void test_proxy_method() {
+        // 目标对象(可以替换成任何的目标对象)
+        Object targetObj = new UserService("张三");
+        // AOP 代理
+        IUserService proxy = (IUserService) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), targetObj.getClass().getInterfaces(), new InvocationHandler() {
+            // 方法匹配器 -- 代理之后根据定义的切入点判断,符合切入条件的进行方法的增强
+            MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* com.spring.bean.IUserService.*(..))");
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                if (methodMatcher.matches(method, targetObj.getClass())) {
+                    // 方法拦截器
+                    MethodInterceptor methodInterceptor = invocation -> {
+                        long start = System.currentTimeMillis();
+                        try {
+                            return invocation.proceed();
+                        } finally {
+                            System.out.println("监控 - Begin By AOP");
+                            System.out.println("方法名称：" + invocation.getMethod().getName());
+                            System.out.println("方法耗时：" + (System.currentTimeMillis() - start) + "ms");
+                            System.out.println("监控 - End\r\n");
+                        }
+                    };
+                    // 反射调用
+                    return methodInterceptor.invoke(new ReflectiveMethodInvocation(targetObj, method, args));
+                }
+                return method.invoke(targetObj, args);
+            }
+        });
+        proxy.queryUserInfo();
+        System.out.println(proxy.register("ls"));
+    }
+
+    @Test
+    public void test_aop() throws NoSuchMethodException {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut("execution(* com.spring.bean.UserService.*(..))");
+
+        Class<UserService> clazz = UserService.class;
+        Method method = clazz.getDeclaredMethod("queryUserInfo");
+
+        System.out.println(pointcut.matches(clazz));
+        System.out.println(pointcut.matches(method, clazz));
+    }
+
+    @Test
+    public void test_dynamic() {
+        // 目标对象
+        IUserService userService = new UserService("zs");
+        // 组装代理信息
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* com.spring.bean.IUserService.*(..))"));
+
+        // 代理对象(JdkDynamicAopProxy)
+        IUserService proxy_jdk = (IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
+        // 测试调用
+        proxy_jdk.queryUserInfo();
+        // 代理对象(Cglib2AopProxy)
+        IUserService proxy_cglib = (IUserService) new Cglib2AopProxy(advisedSupport).getProxy();
+        // 测试调用
+        System.out.println("测试结果：" + proxy_cglib.register("花花"));
+    }
+
+    @Test
+    public void test_proxy_class() {
+        IUserService userService = (IUserService) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{IUserService.class}, (proxy, method, args) -> "你被代理了！");
+        userService.queryUserInfo();
+        userService.register("hello");
     }
 }

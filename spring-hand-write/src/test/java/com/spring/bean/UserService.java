@@ -12,7 +12,7 @@ import com.spring.context.ApplicationContextAware;
 /**
  * @author lihao on 2023/1/16
  */
-public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware {
+public class UserService implements InitializingBean, DisposableBean, BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware, IUserService {
 
     private ApplicationContext applicationContext;
     private BeanFactory beanFactory;
@@ -32,6 +32,11 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
 
     public void queryUserInfo() {
         System.out.println("查询用户信息: " + name);
+    }
+
+    @Override
+    public String register(String userName) {
+        return "注册用户：" + userName + " success！";
     }
 
     public void queryUserInfoByDao() {
