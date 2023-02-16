@@ -15,6 +15,7 @@ import com.spring.bean.factory.config.AutowireCapableBeanFactory;
 import com.spring.bean.factory.config.BeanDefinition;
 import com.spring.bean.factory.config.BeanPostProcessor;
 import com.spring.bean.factory.config.BeanReference;
+import com.spring.bean.factory.config.InstantiationAwareBeanPostProcessor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -28,7 +29,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
-        Object bean = null;
+        Object bean;
+        // 判断是否返回代理 Bean 对象 如果对象符合切面注入条件,就会返回被切面注入的对象
+        bean = resolveBeforeInstantiation(beanName, beanDefinition);
+        if (null != bean) {
+            return bean;
+        }
         try {
             //实例化
             bean = createBeanInstance(beanDefinition, beanName, args);
@@ -46,6 +52,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             registerSingleton(beanName, bean);
         }
         return bean;
+    }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        if (null != bean) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+    }
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                //获取DefaultAdvisorAutoProxyCreator:自动代理对象创建者
+                Object result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            }
+        }
+        return null;
     }
 
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
@@ -163,6 +188,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return result;
     }
 
+    /**
+     * 被切面注入的对象最后也要执行这里的逻辑
+     */
     @Override
     public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
         Object result = existingBean;

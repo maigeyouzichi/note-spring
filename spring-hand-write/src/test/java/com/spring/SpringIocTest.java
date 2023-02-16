@@ -2,17 +2,22 @@ package com.spring;
 
 import cn.hutool.core.io.IoUtil;
 import com.spring.aop.AdvisedSupport;
+import com.spring.aop.ClassFilter;
 import com.spring.aop.MethodMatcher;
 import com.spring.aop.TargetSource;
 import com.spring.aop.aspectj.AspectJExpressionPointcut;
+import com.spring.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import com.spring.aop.framework.Cglib2AopProxy;
 import com.spring.aop.framework.JdkDynamicAopProxy;
+import com.spring.aop.framework.ProxyFactory;
 import com.spring.aop.framework.ReflectiveMethodInvocation;
+import com.spring.aop.framework.adapter.MethodBeforeAdviceInterceptor;
 import com.spring.bean.IUserService;
 import com.spring.bean.PropertyValue;
 import com.spring.bean.PropertyValues;
 import com.spring.bean.UserDao;
 import com.spring.bean.UserService;
+import com.spring.bean.UserServiceBeforeAdvice;
 import com.spring.bean.UserServiceInterceptor;
 import com.spring.bean.factory.config.BeanDefinition;
 import com.spring.bean.factory.config.BeanReference;
@@ -42,6 +47,21 @@ import org.openjdk.jol.info.ClassLayout;
  * @author lihao on 2023/1/17
  */
 public class SpringIocTest {
+
+    private DefaultResourceLoader resourceLoader;
+    private AdvisedSupport advisedSupport;
+
+    @Before
+    public void init() {
+        resourceLoader = new DefaultResourceLoader();
+        // 目标对象
+        IUserService userService = new UserService();
+        // 组装代理信息
+        advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* com.spring.bean.IUserService.*(..))"));
+    }
 
     /**
      * 测试容器内实例化对象
@@ -128,13 +148,6 @@ public class SpringIocTest {
         UserService userService = declaredConstructor.newInstance("周杰伦");
         System.out.println(userService);
         System.out.println(userService.getClass().getName());
-    }
-
-    private DefaultResourceLoader resourceLoader;
-
-    @Before
-    public void init() {
-        resourceLoader = new DefaultResourceLoader();
     }
 
     @Test
@@ -326,5 +339,48 @@ public class SpringIocTest {
         IUserService userService = (IUserService) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{IUserService.class}, (proxy, method, args) -> "你被代理了！");
         userService.queryUserInfo();
         userService.register("hello");
+    }
+
+    @Test
+    public void test_proxyFactory() {
+        advisedSupport.setProxyTargetClass(false); // false/true，JDK动态代理、CGlib动态代理
+        IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+        proxy.queryUserInfo();
+    }
+
+    @Test
+    public void test_beforeAdvice() {
+        UserServiceBeforeAdvice beforeAdvice = new UserServiceBeforeAdvice();
+        MethodBeforeAdviceInterceptor interceptor = new MethodBeforeAdviceInterceptor(beforeAdvice);
+        advisedSupport.setMethodInterceptor(interceptor);
+        IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+        proxy.queryUserInfo();
+    }
+
+    @Test
+    public void test_advisor() {
+        // 目标对象
+        IUserService userService = new UserService();
+        AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+        advisor.setExpression("execution(* com.spring.bean.IUserService.*(..))");
+        advisor.setAdvice(new MethodBeforeAdviceInterceptor(new UserServiceBeforeAdvice()));
+        ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+        if (classFilter.matches(userService.getClass())) {
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+            TargetSource targetSource = new TargetSource(userService);
+            advisedSupport.setTargetSource(targetSource);
+            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+            advisedSupport.setProxyTargetClass(true); // false/true，JDK动态代理、CGlib动态代理
+            IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+            proxy.queryUserInfo();
+        }
+    }
+
+    @Test
+    public void test_aop_() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        userService.queryUserInfo();
     }
 }
