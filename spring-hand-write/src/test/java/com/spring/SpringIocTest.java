@@ -12,7 +12,9 @@ import com.spring.aop.framework.JdkDynamicAopProxy;
 import com.spring.aop.framework.ProxyFactory;
 import com.spring.aop.framework.ReflectiveMethodInvocation;
 import com.spring.aop.framework.adapter.MethodBeforeAdviceInterceptor;
+import com.spring.bean.BeansException;
 import com.spring.bean.IUserService;
+import com.spring.bean.IUserService2;
 import com.spring.bean.PropertyValue;
 import com.spring.bean.PropertyValues;
 import com.spring.bean.UserDao;
@@ -20,6 +22,7 @@ import com.spring.bean.UserService;
 import com.spring.bean.UserServiceBeforeAdvice;
 import com.spring.bean.UserServiceInterceptor;
 import com.spring.bean.factory.config.BeanDefinition;
+import com.spring.bean.factory.config.BeanPostProcessor;
 import com.spring.bean.factory.config.BeanReference;
 import com.spring.bean.factory.support.DefaultListableBeanFactory;
 import com.spring.bean.factory.xml.XmlBeanDefinitionReader;
@@ -36,6 +39,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -382,5 +387,43 @@ public class SpringIocTest {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
         IUserService userService = applicationContext.getBean("userService", IUserService.class);
         userService.queryUserInfo();
+    }
+
+
+    @Test
+    public void test_scan() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
+        IUserService2 userService2 = applicationContext.getBean("userService2", IUserService2.class);
+        System.out.println("测试结果：" + userService2.queryUserInfo());
+    }
+
+    @Test
+    public void test_property() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-property.xml");
+        IUserService2 userService2 = applicationContext.getBean("userService2", IUserService2.class);
+        System.out.println("测试结果：" + userService2);
+    }
+
+    @Test
+    public void test_beanPost(){
+
+        BeanPostProcessor beanPostProcessor = new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+                return null;
+            }
+
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+                return null;
+            }
+        };
+
+        List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+        beanPostProcessors.add(beanPostProcessor);
+        beanPostProcessors.add(beanPostProcessor);
+        beanPostProcessors.remove(beanPostProcessor);
+
+        System.out.println(beanPostProcessors.size());
     }
 }

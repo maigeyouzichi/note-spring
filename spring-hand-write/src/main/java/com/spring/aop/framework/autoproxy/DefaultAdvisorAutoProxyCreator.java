@@ -36,6 +36,7 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
     public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
         if (isInfrastructureClass(beanClass)) { return null; }
         Collection<AspectJExpressionPointcutAdvisor> advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+        //每个需要加载的对象都会跑一遍全部的advisor,能够匹配到切面表达式规则的都创建出代理对象进行管理(目前的实现是满足一个就返回)
         for (AspectJExpressionPointcutAdvisor advisor : advisors) {
             ClassFilter classFilter = advisor.getPointcut().getClassFilter();
             if (!classFilter.matches(beanClass)) { continue; }
