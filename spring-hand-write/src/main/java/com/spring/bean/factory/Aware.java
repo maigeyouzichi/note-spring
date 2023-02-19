@@ -1,4 +1,4 @@
-package com.spring.bean.factory.aware;
+package com.spring.bean.factory;
 
 /**
  * 标志性接口 Aware

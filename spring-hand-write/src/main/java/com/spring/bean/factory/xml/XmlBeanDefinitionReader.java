@@ -71,6 +71,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             if (StrUtil.isEmpty(scanPath)) {
                 throw new BeansException("The value of base-package attribute can not be empty or null");
             }
+            //将带有@Component注解的类加载到类定义容器中去 (注册类definition)
             scanPackage(scanPath);
         }
 

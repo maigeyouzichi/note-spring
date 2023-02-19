@@ -15,6 +15,7 @@ import com.spring.aop.framework.adapter.MethodBeforeAdviceInterceptor;
 import com.spring.bean.BeansException;
 import com.spring.bean.IUserService;
 import com.spring.bean.IUserService2;
+import com.spring.bean.IUserService3;
 import com.spring.bean.PropertyValue;
 import com.spring.bean.PropertyValues;
 import com.spring.bean.UserDao;
@@ -425,5 +426,12 @@ public class SpringIocTest {
         beanPostProcessors.remove(beanPostProcessor);
 
         System.out.println(beanPostProcessors.size());
+    }
+
+    @Test
+    public void test_scan3() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring3.xml");
+        IUserService3 userService3 = applicationContext.getBean("userService3", IUserService3.class);
+        System.out.println("测试结果：" + userService3.queryUserInfo());
     }
 }
