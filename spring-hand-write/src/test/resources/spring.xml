@@ -9,6 +9,8 @@
         <property name="location" value="深圳"/>
         <property name="userDao" ref="userDao"/>
         <property name="iUserDao" ref="proxyUserDao"/>
+        <property name="token" value="RejDlI78hu223Opo983Ds"/>
+        <property name = "name" value="Jay"/>
     </bean>
 
     <bean class="com.spring.common.MyBeanFactoryPostProcessor"/>

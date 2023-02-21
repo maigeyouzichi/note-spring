@@ -32,6 +32,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
         // 4. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)
+        // 修改beanDefinition: 解析@value 和 xml中属性中的{xxx}
         invokeBeanFactoryPostProcessors(beanFactory);
 
         // 5. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作

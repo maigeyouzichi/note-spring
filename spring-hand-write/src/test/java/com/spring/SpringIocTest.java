@@ -434,4 +434,11 @@ public class SpringIocTest {
         IUserService3 userService3 = applicationContext.getBean("userService3", IUserService3.class);
         System.out.println("测试结果：" + userService3.queryUserInfo());
     }
+
+    @Test
+    public void test_autoProxy() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        userService.queryUserInfo();
+    }
 }

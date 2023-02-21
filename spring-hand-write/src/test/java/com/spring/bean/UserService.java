@@ -22,6 +22,15 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
     private String location;
     private UserDao userDao;
     private IUserDao iUserDao;
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public UserService() {
     }
@@ -31,7 +40,7 @@ public class UserService implements InitializingBean, DisposableBean, BeanNameAw
     }
 
     public void queryUserInfo() {
-        System.out.println("查询用户信息: " + name);
+        System.out.println("查询用户信息: " + name + "token:" + token);
     }
 
     @Override
