@@ -32,6 +32,8 @@ import com.spring.common.MyBeanPostProcessor;
 import com.spring.context.support.ClassPathXmlApplicationContext;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.Resource;
+import com.spring.cyclic.Husband;
+import com.spring.cyclic.Wife;
 import com.spring.event.CustomEvent;
 import java.io.IOException;
 import java.io.InputStream;
@@ -440,5 +442,14 @@ public class SpringIocTest {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
         IUserService userService = applicationContext.getBean("userService", IUserService.class);
         userService.queryUserInfo();
+    }
+
+    @Test
+    public void test_circular() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-cyclic.xml");
+        Husband husband = applicationContext.getBean("husband", Husband.class);
+        Wife wife = applicationContext.getBean("wife", Wife.class);
+        System.out.println("老公的媳妇：" + husband.queryWife());
+        System.out.println("媳妇的老公：" + wife.queryHusband());
     }
 }

@@ -40,6 +40,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
             //实例化
             bean = createBeanInstance(beanDefinition, beanName, args);
+            // 处理循环依赖，将实例化后的Bean对象提前放入缓存中暴露出来
+            if (beanDefinition.isSingleton()) {
+                Object finalBean = bean;
+                //这里放入匿名实现,类似一个FactoryBean
+                //一级缓存如果没有就放在三级缓存中
+                addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, beanDefinition, finalBean));
+            }
             // 实例化后判断 返回false的对象不进行实例化的后续操作
             // 实例化后操作
             boolean continueWithPropertyPopulation = applyBeanPostProcessorsAfterInstantiation(beanName, bean);
@@ -59,10 +66,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // 注册实现了 DisposableBean 接口的 Bean 对象以及xml中声明了销毁方法的对象(声明需要丢弃的bean)
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
         // 判断 SCOPE_SINGLETON、SCOPE_PROTOTYPE
+        Object exposedObject = bean;
         if (beanDefinition.isSingleton()) {
-            registerSingleton(beanName, bean);
+            //获取代理对象
+            //从一级缓存至三级缓存,依次查找
+            exposedObject = getSingleton(beanName);
+            //放入一级缓存,二三级缓存清除
+            registerSingleton(beanName, exposedObject);
         }
-        return bean;
+        return exposedObject;
+    }
+
+    protected Object getEarlyBeanReference(String beanName, BeanDefinition beanDefinition, Object bean) {
+        Object exposedObject = bean;
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                exposedObject = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).getEarlyBeanReference(exposedObject, beanName);
+                if (null == exposedObject) return exposedObject;
+            }
+        }
+        return exposedObject;
     }
 
     /**
