@@ -2,20 +2,22 @@ package com.spring.bean.factory.support;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.TypeUtil;
 import com.spring.bean.BeansException;
 import com.spring.bean.PropertyValue;
 import com.spring.bean.PropertyValues;
+import com.spring.bean.factory.Aware;
 import com.spring.bean.factory.BeanClassLoaderAware;
 import com.spring.bean.factory.BeanFactoryAware;
 import com.spring.bean.factory.BeanNameAware;
 import com.spring.bean.factory.DisposableBean;
 import com.spring.bean.factory.InitializingBean;
-import com.spring.bean.factory.Aware;
 import com.spring.bean.factory.config.AutowireCapableBeanFactory;
 import com.spring.bean.factory.config.BeanDefinition;
 import com.spring.bean.factory.config.BeanPostProcessor;
 import com.spring.bean.factory.config.BeanReference;
 import com.spring.bean.factory.config.InstantiationAwareBeanPostProcessor;
+import com.spring.core.convert.ConversionService;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -35,9 +37,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             // 现在都是会返回null
             // 实例化前操作
             bean = resolveBeforeInstantiation(beanName, beanDefinition);
-            if (null != bean) {
-                return bean;
-            }
+            if (null != bean) { return bean; }
             //实例化
             bean = createBeanInstance(beanDefinition, beanName, args);
             // 处理循环依赖，将实例化后的Bean对象提前放入缓存中暴露出来
@@ -50,11 +50,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             // 实例化后判断 返回false的对象不进行实例化的后续操作
             // 实例化后操作
             boolean continueWithPropertyPopulation = applyBeanPostProcessorsAfterInstantiation(beanName, bean);
-            if (!continueWithPropertyPopulation) {
-                return bean;
-            }
+            if (!continueWithPropertyPopulation) { return bean; }
             // 在设置 Bean 属性之前，允许 BeanPostProcessor 修改属性值
-            // 处理 @value 和 @autowired
+            // 处理 @value 和 @autowired, 把注解标记的属性设置成最终的值或者对象
             applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
             // 给 Bean 填充属性
             applyPropertyValues(beanName, bean, beanDefinition);
@@ -90,10 +88,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * Bean 实例化后对于返回 false 的对象，不在执行后续设置 Bean 对象属性的操作
-     *
-     * @param beanName
-     * @param bean
-     * @return
      */
     private boolean applyBeanPostProcessorsAfterInstantiation(String beanName, Object bean) {
         boolean continueWithPropertyPopulation = true;
@@ -111,10 +105,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 在设置 Bean 属性之前，允许 BeanPostProcessor 修改属性值
-     *
-     * @param beanName
-     * @param bean
-     * @param beanDefinition
+     * 设置属性之后,将对应的属性的值,加载进beanDefinition
      */
     protected void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
         for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
@@ -182,6 +173,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                     // A 依赖 B，获取 B 的实例化
                     BeanReference beanReference = (BeanReference) value;
                     value = getBean(beanReference.getBeanName());
+                }else {
+                    // 通过反射设置属性前,增加一步类型转换
+                    Class<?> sourceType = value.getClass();
+                    Class<?> targetType = (Class<?>) TypeUtil.getFieldType(bean.getClass(), name);
+                    ConversionService conversionService = getConversionService();
+                    if (conversionService != null) {
+                        if (conversionService.canConvert(sourceType, targetType)) {
+                            value = conversionService.convert(value, targetType);
+                        }
+                    }
                 }
                 // 属性填充
                 BeanUtil.setFieldValue(bean, name, value);

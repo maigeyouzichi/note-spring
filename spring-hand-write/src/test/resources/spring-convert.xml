@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+	         http://www.springframework.org/schema/beans/spring-beans.xsd
+		 http://www.springframework.org/schema/context">
+
+    <!-- bean定义中声明了属性的值,但是要把字符串类型转换成时间,BigDecimal,Integer 等类型, 这就需要进行类型转换 -->
+    <bean id="husband" class="com.spring.cyclic.Husband">
+        <property name="wifiName" value="你猜"/>
+        <property name="marriageDate" value="2021-08-08"/>
+    </bean>
+
+    <bean id="conversionService" class="com.spring.context.support.ConversionServiceFactoryBean">
+        <property name="converters" ref="converters"/>
+    </bean>
+
+    <bean id="converters" class="com.spring.converter.ConvertersFactoryBean"/>
+</beans>

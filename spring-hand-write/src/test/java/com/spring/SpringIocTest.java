@@ -30,6 +30,9 @@ import com.spring.bean.factory.xml.XmlBeanDefinitionReader;
 import com.spring.common.MyBeanFactoryPostProcessor;
 import com.spring.common.MyBeanPostProcessor;
 import com.spring.context.support.ClassPathXmlApplicationContext;
+import com.spring.converter.StringToIntegerConverter;
+import com.spring.core.convert.converter.Converter;
+import com.spring.core.convert.support.StringToNumberConverterFactory;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.Resource;
 import com.spring.cyclic.Husband;
@@ -452,4 +455,30 @@ public class SpringIocTest {
         System.out.println("老公的媳妇：" + husband.queryWife());
         System.out.println("媳妇的老公：" + wife.queryHusband());
     }
+
+    @Test
+    public void test_convert() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-convert.xml");
+        Husband husband = applicationContext.getBean("husband", Husband.class);
+        System.out.println("测试结果：" + husband);
+    }
+
+    @Test
+    public void test_StringToIntegerConverter() {
+        StringToIntegerConverter converter = new StringToIntegerConverter();
+        Integer num = converter.convert("1234");
+        System.out.println("测试结果：" + num);
+    }
+
+    @Test
+    public void test_StringToNumberConverterFactory() {
+        StringToNumberConverterFactory converterFactory = new StringToNumberConverterFactory();
+
+        Converter<String, Integer> stringToIntegerConverter = converterFactory.getConverter(Integer.class);
+        System.out.println("测试结果：" + stringToIntegerConverter.convert("1234"));
+
+        Converter<String, Long> stringToLongConverter = converterFactory.getConverter(Long.class);
+        System.out.println("测试结果：" + stringToLongConverter.convert("1234"));
+    }
+
 }
